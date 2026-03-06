@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTechnicians } from '@/hooks/useTechnicians';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Phone, User, RefreshCw } from 'lucide-react';
-import { TechnicianMap } from '@/components/map/TechnicianMap';
+import { SimpleMap } from '@/components/map/SimpleMap';
 import { Button } from '@/components/ui/button';
 
 const statusConfig = {
@@ -18,7 +18,7 @@ export default function MapPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Mapa</h1>
+          <h1 className="text-2xl font-bold">Mapa de Deslocamento</h1>
           <p className="text-muted-foreground">Visualize a localização dos técnicos em tempo real</p>
         </div>
         <Button
@@ -33,20 +33,18 @@ export default function MapPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Google Maps */}
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 border-border/50">
           <CardContent className="p-0 overflow-hidden rounded-lg">
-            <TechnicianMap technicians={technicians || []} />
+            <SimpleMap technicians={technicians || []} />
           </CardContent>
         </Card>
 
-        {/* Technicians list */}
-        <Card>
+        <Card className="border-border/50">
           <CardHeader>
             <CardTitle className="text-lg flex items-center justify-between">
               Técnicos no Mapa
-              <Badge variant="secondary">
-                {technicians?.filter(t => t.current_location_lat && t.current_location_lng).length || 0} com localização
+              <Badge variant="secondary" className="font-mono">
+                {technicians?.filter(t => t.current_location_lat && t.current_location_lng).length || 0} rastreados
               </Badge>
             </CardTitle>
           </CardHeader>
@@ -71,8 +69,8 @@ export default function MapPage() {
                     </div>
                     <div className="flex-1 min-w-0 space-y-1">
                       <div className="flex items-center gap-2">
-                        <p className="font-medium truncate">{tech.name}</p>
-                        <Badge className={`${status.className} flex-shrink-0`}>
+                        <p className="font-medium truncate text-sm">{tech.name}</p>
+                        <Badge className={`${status.className} flex-shrink-0 text-[10px]`}>
                           {status.label}
                         </Badge>
                       </div>

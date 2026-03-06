@@ -61,7 +61,7 @@ export function ServiceOrderList() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
   const filteredOrders = orders?.filter(order => 
-    order.order_number.toLowerCase().includes(search.toLowerCase()) ||
+    (order.order_number || '').toLowerCase().includes(search.toLowerCase()) ||
     order.customer_name.toLowerCase().includes(search.toLowerCase()) ||
     order.customer_address.toLowerCase().includes(search.toLowerCase())
   );

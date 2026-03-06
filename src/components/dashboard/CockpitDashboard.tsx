@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { GaugeChart } from './GaugeChart';
+import { DonutChart } from './DonutChart';
 import { KpiCard } from './KpiCard';
 import { StatusBar } from './StatusBar';
 import { useDashboardStats } from '@/hooks/useDashboardStats';
@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Users, Wrench, Activity, Clock, CheckCircle2, AlertTriangle, TrendingUp, BarChart3 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  AreaChart, Area, PieChart, Pie, Cell
+  PieChart, Pie, Cell
 } from 'recharts';
 
 function LoadingSkeleton() {
@@ -55,33 +55,23 @@ export function CockpitDashboard() {
   const completedOrders = stats?.completedOrders || 0;
 
   const presencaPct = totalTech > 0 ? ((availTech + busyTech) / totalTech) * 100 : 0;
-  const capacidade = (availTech + busyTech) * 8; // hours per day
+  const capacidade = (availTech + busyTech) * 8;
   const capacidadePlan = totalTech * 8;
   const produtividade = (availTech + busyTech) > 0 ? totalOrders / (availTech + busyTech) : 0;
   const eficiencia = totalOrders > 0 ? (completedOrders / totalOrders) * 100 : 0;
 
-  // Status by type data
   const statusData = [
     { name: 'Instalação', value: orders?.filter(o => o.service_type === 'installation').length || 0, fill: COLORS.primary },
     { name: 'Manutenção', value: orders?.filter(o => o.service_type === 'maintenance').length || 0, fill: COLORS.success },
     { name: 'Reparo', value: orders?.filter(o => o.service_type === 'repair').length || 0, fill: COLORS.accent },
   ];
 
-  // Priority data
   const priorityData = [
     { name: 'Normal', pendentes: orders?.filter(o => o.priority === 'normal' && o.status === 'pending').length || 0, concluidas: orders?.filter(o => o.priority === 'normal' && o.status === 'completed').length || 0 },
     { name: 'Alta', pendentes: orders?.filter(o => o.priority === 'high' && o.status === 'pending').length || 0, concluidas: orders?.filter(o => o.priority === 'high' && o.status === 'completed').length || 0 },
     { name: 'Urgente', pendentes: orders?.filter(o => o.priority === 'urgent' && o.status === 'pending').length || 0, concluidas: orders?.filter(o => o.priority === 'urgent' && o.status === 'completed').length || 0 },
   ];
 
-  // Technician status breakdown for bar chart
-  const techStatusData = [
-    { name: 'Disponível', value: availTech, fill: COLORS.success },
-    { name: 'Ocupado', value: busyTech, fill: COLORS.warning },
-    { name: 'Offline', value: offlineTech, fill: COLORS.muted },
-  ];
-
-  // Orders by status for area simulation
   const ordersStatusData = [
     { name: 'Pendente', value: pendingOrders, fill: COLORS.warning },
     { name: 'Em Progresso', value: inProgressOrders, fill: COLORS.primary },
@@ -103,11 +93,11 @@ export function CockpitDashboard() {
         </div>
       </div>
 
-      {/* Gauges Row */}
+      {/* Donut Charts Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="border-border/50">
           <CardContent className="p-4 flex flex-col items-center">
-            <GaugeChart value={availTech + busyTech} max={totalTech || 1} label="Presença Real" size="md" />
+            <DonutChart value={availTech + busyTech} max={totalTech || 1} label="Presença Real" size="md" />
             <div className="mt-2 text-center">
               <span className="text-xs text-muted-foreground">Meta: </span>
               <span className="text-xs text-primary font-mono">{totalTech}</span>
@@ -117,7 +107,7 @@ export function CockpitDashboard() {
 
         <Card className="border-border/50">
           <CardContent className="p-4 flex flex-col items-center">
-            <GaugeChart value={capacidade} max={capacidadePlan || 1} label="Capacidade Prod. Real" unit="h" size="md" />
+            <DonutChart value={capacidade} max={capacidadePlan || 1} label="Capacidade Prod. Real" unit="h" size="md" />
             <div className="mt-2 text-center">
               <span className="text-xs text-muted-foreground">Plan: </span>
               <span className="text-xs text-primary font-mono">{capacidadePlan.toLocaleString('pt-BR')}h</span>
@@ -127,7 +117,7 @@ export function CockpitDashboard() {
 
         <Card className="border-border/50">
           <CardContent className="p-4 flex flex-col items-center">
-            <GaugeChart value={produtividade} max={Math.max(produtividade * 1.2, 5)} label="Produtividade Real" size="md" />
+            <DonutChart value={produtividade} max={Math.max(produtividade * 1.2, 5)} label="Produtividade Real" size="md" />
             <div className="mt-2 text-center">
               <span className="text-xs text-muted-foreground">OS/Técnico: </span>
               <span className="text-xs text-primary font-mono">{produtividade.toFixed(2)}</span>
@@ -138,58 +128,21 @@ export function CockpitDashboard() {
 
       {/* KPI Cards Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <KpiCard
-          title="Técnicos Total"
-          value={totalTech}
-          icon={<Users className="h-4 w-4" />}
-          highlight
-        />
-        <KpiCard
-          title="Disponíveis"
-          value={availTech}
-          subtitle={`${presencaPct.toFixed(0)}% presença`}
-          icon={<CheckCircle2 className="h-4 w-4" />}
-        />
-        <KpiCard
-          title="Em Atendimento"
-          value={busyTech}
-          icon={<Activity className="h-4 w-4" />}
-        />
-        <KpiCard
-          title="Offline"
-          value={offlineTech}
-          icon={<AlertTriangle className="h-4 w-4" />}
-        />
+        <KpiCard title="Técnicos Total" value={totalTech} icon={<Users className="h-4 w-4" />} highlight />
+        <KpiCard title="Disponíveis" value={availTech} subtitle={`${presencaPct.toFixed(0)}% presença`} icon={<CheckCircle2 className="h-4 w-4" />} />
+        <KpiCard title="Em Atendimento" value={busyTech} icon={<Activity className="h-4 w-4" />} />
+        <KpiCard title="Offline" value={offlineTech} icon={<AlertTriangle className="h-4 w-4" />} />
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <KpiCard
-          title="Total OS"
-          value={totalOrders}
-          icon={<Wrench className="h-4 w-4" />}
-          highlight
-        />
-        <KpiCard
-          title="Pendentes"
-          value={pendingOrders}
-          icon={<Clock className="h-4 w-4" />}
-        />
-        <KpiCard
-          title="Em Progresso"
-          value={inProgressOrders}
-          icon={<TrendingUp className="h-4 w-4" />}
-        />
-        <KpiCard
-          title="Concluídas"
-          value={completedOrders}
-          subtitle={`${eficiencia.toFixed(0)}% eficiência`}
-          icon={<CheckCircle2 className="h-4 w-4" />}
-        />
+        <KpiCard title="Total OS" value={totalOrders} icon={<Wrench className="h-4 w-4" />} highlight />
+        <KpiCard title="Pendentes" value={pendingOrders} icon={<Clock className="h-4 w-4" />} />
+        <KpiCard title="Em Progresso" value={inProgressOrders} icon={<TrendingUp className="h-4 w-4" />} />
+        <KpiCard title="Concluídas" value={completedOrders} subtitle={`${eficiencia.toFixed(0)}% eficiência`} icon={<CheckCircle2 className="h-4 w-4" />} />
       </div>
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* % Meta vs Tipo de Serviço */}
         <Card className="border-border/50">
           <CardHeader className="pb-2 pt-4 px-4">
             <CardTitle className="text-sm text-primary font-mono">% Meta vs. Tipo de Serviço</CardTitle>
@@ -200,10 +153,7 @@ export function CockpitDashboard() {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(0, 0%, 15%)" />
                 <XAxis dataKey="name" tick={{ fill: 'hsl(0, 0%, 55%)', fontSize: 11 }} axisLine={false} />
                 <YAxis tick={{ fill: 'hsl(0, 0%, 55%)', fontSize: 11 }} axisLine={false} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: 'hsl(0, 0%, 9%)', border: '1px solid hsl(0, 0%, 18%)', borderRadius: 8, color: 'hsl(50, 10%, 90%)' }}
-                  labelStyle={{ color: 'hsl(48, 100%, 50%)' }}
-                />
+                <Tooltip contentStyle={{ backgroundColor: 'hsl(0, 0%, 9%)', border: '1px solid hsl(0, 0%, 18%)', borderRadius: 8, color: 'hsl(50, 10%, 90%)' }} labelStyle={{ color: 'hsl(48, 100%, 50%)' }} />
                 <Bar dataKey="value" name="Quantidade" radius={[4, 4, 0, 0]}>
                   {statusData.map((entry, i) => (
                     <Cell key={i} fill={entry.fill} />
@@ -214,7 +164,6 @@ export function CockpitDashboard() {
           </CardContent>
         </Card>
 
-        {/* OS por Prioridade */}
         <Card className="border-border/50">
           <CardHeader className="pb-2 pt-4 px-4">
             <CardTitle className="text-sm text-primary font-mono">OS por Prioridade</CardTitle>
@@ -225,10 +174,7 @@ export function CockpitDashboard() {
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(0, 0%, 15%)" />
                 <XAxis dataKey="name" tick={{ fill: 'hsl(0, 0%, 55%)', fontSize: 11 }} axisLine={false} />
                 <YAxis tick={{ fill: 'hsl(0, 0%, 55%)', fontSize: 11 }} axisLine={false} />
-                <Tooltip
-                  contentStyle={{ backgroundColor: 'hsl(0, 0%, 9%)', border: '1px solid hsl(0, 0%, 18%)', borderRadius: 8, color: 'hsl(50, 10%, 90%)' }}
-                  labelStyle={{ color: 'hsl(48, 100%, 50%)' }}
-                />
+                <Tooltip contentStyle={{ backgroundColor: 'hsl(0, 0%, 9%)', border: '1px solid hsl(0, 0%, 18%)', borderRadius: 8, color: 'hsl(50, 10%, 90%)' }} labelStyle={{ color: 'hsl(48, 100%, 50%)' }} />
                 <Bar dataKey="pendentes" name="Pendentes" fill={COLORS.warning} radius={[4, 4, 0, 0]} />
                 <Bar dataKey="concluidas" name="Concluídas" fill={COLORS.success} radius={[4, 4, 0, 0]} />
               </BarChart>
@@ -237,7 +183,7 @@ export function CockpitDashboard() {
         </Card>
       </div>
 
-      {/* Bottom Row - Status Bars + Pie */}
+      {/* Bottom Row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <Card className="border-border/50">
           <CardHeader className="pb-2 pt-4 px-4">
@@ -257,22 +203,12 @@ export function CockpitDashboard() {
           <CardContent className="p-4 pt-0">
             <ResponsiveContainer width="100%" height={160}>
               <PieChart>
-                <Pie
-                  data={ordersStatusData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={40}
-                  outerRadius={65}
-                  dataKey="value"
-                  stroke="none"
-                >
+                <Pie data={ordersStatusData} cx="50%" cy="50%" innerRadius={40} outerRadius={65} dataKey="value" stroke="none">
                   {ordersStatusData.map((entry, i) => (
                     <Cell key={i} fill={entry.fill} />
                   ))}
                 </Pie>
-                <Tooltip
-                  contentStyle={{ backgroundColor: 'hsl(0, 0%, 9%)', border: '1px solid hsl(0, 0%, 18%)', borderRadius: 8, color: 'hsl(50, 10%, 90%)' }}
-                />
+                <Tooltip contentStyle={{ backgroundColor: 'hsl(0, 0%, 9%)', border: '1px solid hsl(0, 0%, 18%)', borderRadius: 8, color: 'hsl(50, 10%, 90%)' }} />
               </PieChart>
             </ResponsiveContainer>
             <div className="flex justify-center gap-3 text-[10px]">
