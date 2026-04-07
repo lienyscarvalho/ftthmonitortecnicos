@@ -11,8 +11,12 @@ import {
   LogOut,
   Menu,
   X,
-  ChevronRight
+  ChevronRight,
+  FileSpreadsheet,
+  BarChart3,
+  BookOpen
 } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { cn } from '@/lib/utils';
 
 const navigation = [
@@ -20,6 +24,9 @@ const navigation = [
   { name: 'Técnicos', href: '/dashboard/technicians', icon: Users },
   { name: 'Ordens de Serviço', href: '/dashboard/orders', icon: ClipboardList },
   { name: 'Mapa', href: '/dashboard/map', icon: Map },
+  { name: 'Registros Diários', href: '/dashboard/records', icon: FileSpreadsheet },
+  { name: 'Qualidade', href: '/dashboard/quality', icon: BarChart3 },
+  { name: 'Manual', href: '/dashboard/manual', icon: BookOpen },
 ];
 
 export function DashboardLayout() {
@@ -114,6 +121,7 @@ export function DashboardLayout() {
             <Menu className="h-5 w-5" />
           </Button>
           <div className="flex-1" />
+          <ThemeToggle />
         </header>
 
         {/* Page content */}

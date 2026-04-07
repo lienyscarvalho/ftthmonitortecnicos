@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { 
   Wifi, 
   BarChart3, 
@@ -67,6 +68,7 @@ export default function LandingPage() {
             <span className="font-bold text-lg text-foreground">FTTH Monitor</span>
           </div>
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <Link to="/auth">
               <Button variant="ghost" size="sm">Entrar</Button>
             </Link>
