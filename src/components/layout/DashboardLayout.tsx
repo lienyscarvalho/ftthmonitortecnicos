@@ -24,6 +24,9 @@ const navigation = [
   { name: 'Técnicos', href: '/dashboard/technicians', icon: Users },
   { name: 'Ordens de Serviço', href: '/dashboard/orders', icon: ClipboardList },
   { name: 'Mapa', href: '/dashboard/map', icon: Map },
+  { name: 'Registros Diários', href: '/dashboard/records', icon: FileSpreadsheet },
+  { name: 'Qualidade', href: '/dashboard/quality', icon: BarChart3 },
+  { name: 'Manual', href: '/dashboard/manual', icon: BookOpen },
 ];
 
 export function DashboardLayout() {
