@@ -121,6 +121,7 @@ export function DashboardLayout() {
             <Menu className="h-5 w-5" />
           </Button>
           <div className="flex-1" />
+          <ThemeToggle />
         </header>
 
         {/* Page content */}
