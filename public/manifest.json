@@ -1,0 +1,28 @@
+{
+  "name": "FTTH Monitor - Planejamento e Controle da Produção",
+  "short_name": "FTTH Monitor",
+  "description": "Sistema completo de gestão de técnicos de campo para operações de fibra óptica FTTH.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#d4a017",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
